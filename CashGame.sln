@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1062
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{71388626-91C9-4510-8E78-AA9AF7410C4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{05C27D41-D50C-41AD-AB0A-786C340EBC9C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{31923C56-9C6A-43D7-8453-4E0DE66C1918}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashGame.Domain", "CashGame.Domain\CashGame.Domain.csproj", "{0CFFE4D1-51D3-44E9-AD7D-9FF38628AA70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashGame.Infra.Data", "CashGame.Infra.Data\CashGame.Infra.Data.csproj", "{253D4819-86AB-4C93-92DF-80446CA1FCF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apresentation", "Apresentation", "{24898127-2BB1-4CC7-A1E1-6500B610161C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashGame.Apresentation.Wpf", "CashGame.Apresentation.Wpf\CashGame.Apresentation.Wpf.csproj", "{D5787265-D575-4073-A46A-A55604485C9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashGame.Infra.CrossCutting.Excel", "CashGame.Infra.CrossCutting\CashGame.Infra.CrossCutting.Excel.csproj", "{1AB1F707-9929-4F5A-B879-21DEE31A0B28}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CFFE4D1-51D3-44E9-AD7D-9FF38628AA70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CFFE4D1-51D3-44E9-AD7D-9FF38628AA70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CFFE4D1-51D3-44E9-AD7D-9FF38628AA70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CFFE4D1-51D3-44E9-AD7D-9FF38628AA70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{253D4819-86AB-4C93-92DF-80446CA1FCF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{253D4819-86AB-4C93-92DF-80446CA1FCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{253D4819-86AB-4C93-92DF-80446CA1FCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{253D4819-86AB-4C93-92DF-80446CA1FCF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5787265-D575-4073-A46A-A55604485C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5787265-D575-4073-A46A-A55604485C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5787265-D575-4073-A46A-A55604485C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5787265-D575-4073-A46A-A55604485C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AB1F707-9929-4F5A-B879-21DEE31A0B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AB1F707-9929-4F5A-B879-21DEE31A0B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AB1F707-9929-4F5A-B879-21DEE31A0B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AB1F707-9929-4F5A-B879-21DEE31A0B28}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{05C27D41-D50C-41AD-AB0A-786C340EBC9C} = {71388626-91C9-4510-8E78-AA9AF7410C4F}
+		{31923C56-9C6A-43D7-8453-4E0DE66C1918} = {71388626-91C9-4510-8E78-AA9AF7410C4F}
+		{0CFFE4D1-51D3-44E9-AD7D-9FF38628AA70} = {05C27D41-D50C-41AD-AB0A-786C340EBC9C}
+		{253D4819-86AB-4C93-92DF-80446CA1FCF8} = {31923C56-9C6A-43D7-8453-4E0DE66C1918}
+		{24898127-2BB1-4CC7-A1E1-6500B610161C} = {71388626-91C9-4510-8E78-AA9AF7410C4F}
+		{D5787265-D575-4073-A46A-A55604485C9E} = {24898127-2BB1-4CC7-A1E1-6500B610161C}
+		{1AB1F707-9929-4F5A-B879-21DEE31A0B28} = {31923C56-9C6A-43D7-8453-4E0DE66C1918}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B944B9F7-2444-4B3F-885E-DD6B0BE4B943}
+	EndGlobalSection
+EndGlobal
