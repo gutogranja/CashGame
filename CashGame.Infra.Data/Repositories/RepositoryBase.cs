@@ -8,7 +8,7 @@ namespace CashGame.Infra.Data.Repositories
 {
     public abstract class RepositoryBase<T, TView> : IRepositoryBase<T, TView> where T : Entity where TView : class
     {
-        protected SqlConnection cn = new SqlConnection("Data Source=srvcon,6060;Initial Catalog=Central;Connection Timeout=180;Persist Security Info=True;User ID=Portal;Password=**@pwp0rt4l@**;Application Name=CashGame");
+        protected SqlConnection cn = new SqlConnection("");
         public abstract IEnumerable<TView> ListarTodos();
 
         public T ObterPorId(int id)
