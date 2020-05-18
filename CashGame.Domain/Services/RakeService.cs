@@ -4,6 +4,7 @@ using CashGame.Domain.Entities.Requests;
 using CashGame.Domain.Entities.Views;
 using CashGame.Domain.Interfaces.Repositories;
 using CashGame.Domain.Interfaces.Services;
+using System;
 using System.Collections.Generic;
 
 namespace CashGame.Domain.Services
@@ -49,7 +50,6 @@ namespace CashGame.Domain.Services
             var rakeRetirado= repositorio.ObterPorId(request.Id);
             if (rakeRetirado != null)
             {
-                rakeRetirado.AlterarDataRetirada(request.DataRetirada);
                 rakeRetirado.AlterarValor(request.Valor);
                 ValidarRake(rakeRetirado);
                 if (Validar)
@@ -74,6 +74,11 @@ namespace CashGame.Domain.Services
             }
             else
                 AdicionarNotificacao("Rake", RakeMensagem.Inativar);
+        }
+
+        public IEnumerable<RakeView> ListarPorData(DateTime data)
+        {
+            return repositorio.ListarPorData(data);
         }
 
         private void ValidarRake(Rake rake)

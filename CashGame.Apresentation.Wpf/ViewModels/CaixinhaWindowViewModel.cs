@@ -6,9 +6,11 @@ using CashGame.Infra.Data.Repositories;
 using MahApps.Metro.Controls.Dialogs;
 using Prism.Commands;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace CashGame.Apresentation.Wpf.ViewModels
 {
@@ -17,10 +19,12 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         IDialogCoordinator dialog;
         private readonly ICaixinhaService caixinhaService;
         private readonly IDealerService dealerService;
+        private readonly CaixinhaService service = new CaixinhaService(new CaixinhaRepository());
         public DelegateCommand IncluirCommand { get; set; }
         public DelegateCommand AlterarCommand { get; set; }
         public DelegateCommand InativarCommand { get; set; }
         public DelegateCommand LimparTelaCommand { get; set; }
+        public DelegateCommand PesquisarCommand { get; set; }
         public ProgressDialogController Progresso { get; set; }
 
         private bool _modoEdicao = false;
@@ -53,11 +57,59 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             }
         }
 
+        private DateTime _dataPesquisar = DateTime.Now;
+        public DateTime DataPesquisar
+        {
+            get { return _dataPesquisar; }
+            set
+            {
+                SetProperty(ref _dataPesquisar, value);
+                if (VisibilidadeData == Visibility.Visible)
+                    ListaCaixinha = service.ListarPorData(DataPesquisar).ToList();
+            }
+        }
+
+        private Visibility _visibilidadePesquisar = Visibility.Hidden;
+        public Visibility VisibilidadePesquisar
+        {
+            get { return _visibilidadePesquisar; }
+            set
+            {
+                SetProperty(ref _visibilidadePesquisar, value);
+            }
+        }
+
+        private Visibility _visibilidadeData = Visibility.Hidden;
+        public Visibility VisibilidadeData
+        {
+            get { return _visibilidadeData; }
+            set
+            {
+                SetProperty(ref _visibilidadeData, value);
+                if (_visibilidadeData == Visibility.Visible)
+                    ListaCaixinha = service.ListarPorData(DataPesquisar).ToList();
+            }
+        }
+
+        private bool _controlaVisibilidade = false;
+        public bool ControlaVisibilidade
+        {
+            get { return _controlaVisibilidade; }
+            set
+            {
+                SetProperty(ref _controlaVisibilidade, value);
+                VisibilidadePesquisar = _controlaVisibilidade ? Visibility.Visible : Visibility.Hidden;
+            }
+        }
+
         private List<CaixinhaView> _listaCaixinha;
         public List<CaixinhaView> ListaCaixinha
         {
             get { return _listaCaixinha; }
-            set { SetProperty(ref _listaCaixinha, value); }
+            set
+            {
+                SetProperty(ref _listaCaixinha, value);
+            }
         }
 
         private CaixinhaView _view = new CaixinhaView();
@@ -76,7 +128,20 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         public List<DealerView> ListaDealer
         {
             get { return _listaDealer; }
-            set { SetProperty(ref _listaDealer, value); }
+            set
+            {
+                SetProperty(ref _listaDealer, value);
+            }
+        }
+
+        private DealerView _dealerView = new DealerView();
+        public DealerView DealerView
+        {
+            get { return _dealerView; }
+            set
+            {
+                SetProperty(ref _dealerView, value);
+            }
         }
 
         public CaixinhaWindowViewModel(IDialogCoordinator dialog)
@@ -88,14 +153,17 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             AlterarCommand = new DelegateCommand(Alterar, () => ModoEdicao).ObservesProperty(() => ModoEdicao);
             InativarCommand = new DelegateCommand(Inativar, () => ModoEdicao).ObservesProperty(() => ModoEdicao);
             LimparTelaCommand = new DelegateCommand(Limpar);
+            PesquisarCommand = new DelegateCommand(PesquisarPorData);
             BuscarDealers();
             BuscarCaixinhas();
         }
 
         private async void Incluir()
         {
-            Request.IdDealer = View.IdDealer;
+            Request.Id = View.Id;
+            Request.IdDealer = DealerView.Id;
             Request.Data = View.Data;
+            Request.Valor = View.Valor;
             var caixinhaDada = caixinhaService.Incluir(Request, "Carlosg");
             if (!caixinhaService.Validar)
             {
@@ -107,11 +175,11 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             {
                 Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Registrando caixinha para dealer. Aguarde...");
                 Progresso.SetIndeterminate();
-                var t = Task.Factory.StartNew(() => { BuscarCaixinhas(); });
+                var t = Task.Factory.StartNew(() => { Limpar(); });
                 await t;
                 await Progresso?.CloseAsync();
                 await this.dialog.ShowMessageAsync(this, "Atenção", "Caixinha para dealer registrada com sucesso !!!");
-                Limpar();
+                //Limpar();
             }
         }
 
@@ -137,8 +205,8 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                     {
                         await this.dialog.ShowMessageAsync(this, "Atenção", string.Join("\r\n", caixinhaService.Notificacoes.Select(s => s.Mensagem)));
                         caixinhaService.LimparNotificacoes();
+                        BuscarCaixinhas();
                     }
-                    BuscarCaixinhas();
                 }
             }
         }
@@ -150,14 +218,17 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                 var caixinhaDada = caixinhaService.ObterPorId(View.Id);
                 if (caixinhaDada != null)
                 {
-                    Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Inativando registro de caixinha para dealer. Aguarde...");
-                    Progresso.SetIndeterminate();
-                    var t = Task.Factory.StartNew(() => { caixinhaService.Inativar(View.Id, "Carlosg"); });
-                    await t;
-                    await Progresso?.CloseAsync();
-                    await this.dialog.ShowMessageAsync(this, "Atenção", "Registro de caixinha para dealer inativado com sucesso !!!");
-                    Limpar();
-                    BuscarCaixinhas();
+                    var inativarCaixinha = await MessageBoxQuestion("Atenção!", "Deseja mesmo inativar esta caixinha para este(a) dealer <S/N>?");
+                    if (inativarCaixinha)
+                    {
+                        Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Inativando registro de caixinha para dealer. Aguarde...");
+                        Progresso.SetIndeterminate();
+                        var t = Task.Factory.StartNew(() => { caixinhaService.Inativar(View.Id, "Carlosg"); });
+                        await t;
+                        await Progresso?.CloseAsync();
+                        await this.dialog.ShowMessageAsync(this, "Atenção", "Registro de caixinha para dealer inativado com sucesso !!!");
+                        Limpar();
+                    }
                 }
                 else
                 {
@@ -175,11 +246,34 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         private void BuscarCaixinhas()
         {
             ListaCaixinha = caixinhaService.ListarTodos().ToList();
+            ControlaVisibilidade = ListaCaixinha.Count > 0 ? true : false;
         }
 
         private void Limpar()
         {
+            BuscarCaixinhas();
+            VisibilidadeData = Visibility.Hidden;
             View = new CaixinhaView();
+        }
+
+        private void PesquisarPorData()
+        {
+            if (VisibilidadeData == Visibility.Hidden)
+            {
+                DataPesquisar = DateTime.Now;
+                VisibilidadeData = Visibility.Visible;
+            }
+        }
+
+        public async Task<bool> MessageBoxQuestion(string titulo, string msg)
+        {
+            var configuracoes = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Sim",
+                NegativeButtonText = "Não",
+            };
+            MessageDialogResult resultado = await this.dialog.ShowMessageAsync(this, titulo, msg, MessageDialogStyle.AffirmativeAndNegative, configuracoes);
+            return (resultado == MessageDialogResult.Affirmative);
         }
     }
 }

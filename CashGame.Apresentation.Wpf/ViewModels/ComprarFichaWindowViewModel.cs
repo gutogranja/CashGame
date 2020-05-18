@@ -6,9 +6,11 @@ using CashGame.Infra.Data.Repositories;
 using MahApps.Metro.Controls.Dialogs;
 using Prism.Commands;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace CashGame.Apresentation.Wpf.ViewModels
 {
@@ -17,10 +19,12 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         IDialogCoordinator dialog;
         private readonly IComprarFichaService comprarFichaService;
         private readonly IClienteService clienteService;
+        private readonly ComprarFichaService service = new ComprarFichaService(new ComprarFichaRepository());
         public DelegateCommand IncluirCommand { get; set; }
         public DelegateCommand AlterarCommand { get; set; }
         public DelegateCommand InativarCommand { get; set; }
         public DelegateCommand LimparTelaCommand { get; set; }
+        public DelegateCommand PesquisarCommand { get; set; }
         public ProgressDialogController Progresso { get; set; }
 
         private bool _modoEdicao = false;
@@ -53,11 +57,59 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             }
         }
 
+        private DateTime _dataPesquisar = DateTime.Now;
+        public DateTime DataPesquisar
+        {
+            get { return _dataPesquisar; }
+            set
+            {
+                SetProperty(ref _dataPesquisar, value);
+                if (VisibilidadeData == Visibility.Visible)
+                    ListaCompra = service.ListarPorData(DataPesquisar).ToList();
+            }
+        }
+
+        private Visibility _visibilidadePesquisar = Visibility.Hidden;
+        public Visibility VisibilidadePesquisar
+        {
+            get { return _visibilidadePesquisar; }
+            set
+            {
+                SetProperty(ref _visibilidadePesquisar, value);
+            }
+        }
+
+        private Visibility _visibilidadeData = Visibility.Hidden;
+        public Visibility VisibilidadeData
+        {
+            get { return _visibilidadeData; }
+            set
+            {
+                SetProperty(ref _visibilidadeData, value);
+                if (_visibilidadeData == Visibility.Visible)
+                    ListaCompra = service.ListarPorData(DataPesquisar).ToList();
+            }
+        }
+
+        private bool _controlaVisibilidade = false;
+        public bool ControlaVisibilidade
+        {
+            get { return _controlaVisibilidade; }
+            set
+            {
+                SetProperty(ref _controlaVisibilidade, value);
+                VisibilidadePesquisar = _controlaVisibilidade ? Visibility.Visible : Visibility.Hidden;
+            }
+        }
+
         private List<ComprarFichaView> _listaCompra;
         public List<ComprarFichaView> ListaCompra
         {
             get { return _listaCompra; }
-            set { SetProperty(ref _listaCompra, value); }
+            set
+            {
+                SetProperty(ref _listaCompra, value);
+            }
         }
 
         private ComprarFichaView _view = new ComprarFichaView();
@@ -76,7 +128,20 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         public List<ClienteView> ListaCliente
         {
             get { return _listaCliente; }
-            set { SetProperty(ref _listaCliente, value); }
+            set
+            {
+                SetProperty(ref _listaCliente, value);
+            }
+        }
+
+        private ClienteView _clienteView = new ClienteView();
+        public ClienteView ClienteView
+        {
+            get { return _clienteView; }
+            set
+            {
+                SetProperty(ref _clienteView, value);
+            }
         }
 
         public ComprarFichaWindowViewModel(IDialogCoordinator dialog)
@@ -88,13 +153,15 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             AlterarCommand = new DelegateCommand(Alterar, () => ModoEdicao).ObservesProperty(() => ModoEdicao);
             InativarCommand = new DelegateCommand(Inativar, () => ModoEdicao).ObservesProperty(() => ModoEdicao);
             LimparTelaCommand = new DelegateCommand(Limpar);
+            PesquisarCommand = new DelegateCommand(PesquisarPorData);
             BuscarClientes();
             BuscarCompras();
         }
 
         private async void Incluir()
         {
-            Request.IdCliente = View.IdCliente;
+            Request.Id = View.Id;
+            Request.IdCliente = ClienteView.Id;
             Request.Data = View.Data;
             Request.Valor = View.Valor;
             var compraEfetuada = comprarFichaService.Incluir(Request, "Carlosg");
@@ -108,11 +175,11 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             {
                 Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Efetuando compra de fichas. Aguarde...");
                 Progresso.SetIndeterminate();
-                var t = Task.Factory.StartNew(() => { BuscarCompras(); });
+                var t = Task.Factory.StartNew(() => { Limpar(); });
                 await t;
                 await Progresso?.CloseAsync();
                 await this.dialog.ShowMessageAsync(this, "Atenção", "Compra efetuada com sucesso !!!");
-                Limpar();
+                //Limpar();
             }
         }
 
@@ -124,7 +191,6 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                 if (compraEfetuada != null)
                 {
                     Request.Id = View.Id;
-                    Request.IdCliente = View.IdCliente;
                     Request.Valor = View.Valor;
                     compraEfetuada = comprarFichaService.Alterar(Request, "Carlosg");
                     if (comprarFichaService.Validar)
@@ -139,8 +205,8 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                     {
                         await this.dialog.ShowMessageAsync(this, "Atenção", string.Join("\r\n", comprarFichaService.Notificacoes.Select(s => s.Mensagem)));
                         comprarFichaService.LimparNotificacoes();
+                        BuscarCompras();
                     }
-                    BuscarCompras();
                 }
             }
         }
@@ -152,14 +218,17 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                 var compraEfetuada = comprarFichaService.ObterPorId(View.Id);
                 if (compraEfetuada != null)
                 {
-                    Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Inativando a compra de fichas. Aguarde...");
-                    Progresso.SetIndeterminate();
-                    var t = Task.Factory.StartNew(() => { comprarFichaService.Inativar(View.Id, "Carlosg"); });
-                    await t;
-                    await Progresso?.CloseAsync();
-                    await this.dialog.ShowMessageAsync(this, "Atenção", "Compra de fichas inativada com sucesso !!!");
-                    Limpar();
-                    BuscarCompras();
+                    var inativarCompra = await MessageBoxQuestion("Atenção!", "Deseja mesmo inativar esta compra de fichas para este(a) jogador(a)<S/N>?");
+                    if (inativarCompra)
+                    {
+                        Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Inativando a compra de fichas. Aguarde...");
+                        Progresso.SetIndeterminate();
+                        var t = Task.Factory.StartNew(() => { comprarFichaService.Inativar(View.Id, "Carlosg"); });
+                        await t;
+                        await Progresso?.CloseAsync();
+                        await this.dialog.ShowMessageAsync(this, "Atenção", "Compra de fichas inativada com sucesso !!!");
+                        Limpar();
+                    }
                 }
                 else
                 {
@@ -177,11 +246,34 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         private void BuscarCompras()
         {
             ListaCompra = comprarFichaService.ListarTodos().ToList();
+            ControlaVisibilidade = ListaCompra.Count > 0 ? true : false;
         }
 
         private void Limpar()
         {
+            BuscarCompras();
+            VisibilidadeData = Visibility.Hidden;
             View = new ComprarFichaView();
+        }
+
+        private void PesquisarPorData()
+        {
+            if (VisibilidadeData == Visibility.Hidden)
+            {
+                DataPesquisar = DateTime.Now;
+                VisibilidadeData = Visibility.Visible;
+            }
+        }
+
+        public async Task<bool> MessageBoxQuestion(string titulo, string msg)
+        {
+            var configuracoes = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Sim",
+                NegativeButtonText = "Não",
+            };
+            MessageDialogResult resultado = await this.dialog.ShowMessageAsync(this, titulo, msg, MessageDialogStyle.AffirmativeAndNegative, configuracoes);
+            return (resultado == MessageDialogResult.Affirmative);
         }
     }
 }

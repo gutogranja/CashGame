@@ -49,6 +49,9 @@
     <Reference Include="Dapper.Contrib, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.Contrib.2.0.30\lib\net461\Dapper.Contrib.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=4.5.3.3, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -57,6 +60,10 @@
     </Reference>
     <Reference Include="MaterialDesignThemes.Wpf, Version=3.0.1.920, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.3.0.1\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Prism, Version=7.2.0.1422, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.2.0.1422\lib\net45\Prism.dll</HintPath>
@@ -74,6 +81,9 @@
     <Reference Include="System.Data.SqlClient, Version=4.6.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SqlClient.4.8.1\lib\net461\System.Data.SqlClient.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks, Version=4.0.11.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -98,8 +108,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Conversoes\SomenteNumeros.cs" />
     <Compile Include="ViewModels\CaixinhaWindowViewModel.cs" />
     <Compile Include="ViewModels\ComprarFichaWindowViewModel.cs" />
+    <Compile Include="ViewModels\FechamentoWindowViewModel.cs" />
     <Compile Include="ViewModels\PagtoJogadorWindowViewModel.cs" />
     <Compile Include="ViewModels\RakeWindowViewModel.cs" />
     <Compile Include="Views\CaixinhaWindow.xaml.cs">
@@ -107,6 +119,9 @@
     </Compile>
     <Compile Include="Views\ComprarFichaWindow.xaml.cs">
       <DependentUpon>ComprarFichaWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FechamentoWindow.xaml.cs">
+      <DependentUpon>FechamentoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PagtoJogadorWindow.xaml.cs">
       <DependentUpon>PagtoJogadorWindow.xaml</DependentUpon>
@@ -127,6 +142,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DealerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FechamentoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -194,6 +213,10 @@
     <ProjectReference Include="..\CashGame.Domain\CashGame.Domain.csproj">
       <Project>{0CFFE4D1-51D3-44E9-AD7D-9FF38628AA70}</Project>
       <Name>CashGame.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CashGame.Infra.CrossCutting\CashGame.Infra.CrossCutting.Excel.csproj">
+      <Project>{1AB1F707-9929-4F5A-B879-21DEE31A0B28}</Project>
+      <Name>CashGame.Infra.CrossCutting.Excel</Name>
     </ProjectReference>
     <ProjectReference Include="..\CashGame.Infra.Data\CashGame.Infra.Data.csproj">
       <Project>{253D4819-86AB-4C93-92DF-80446CA1FCF8}</Project>

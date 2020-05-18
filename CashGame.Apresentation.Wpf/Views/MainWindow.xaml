@@ -68,42 +68,36 @@
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF1368BD">
                     <ListViewItem Height="60">
                         <StackPanel Orientation="Horizontal">
-                            <Button x:Name="cadastrarClientesButton" VerticalAlignment="Center" Margin="-8" HorizontalAlignment="Left" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Command="{Binding CadastrarClientesCommand}">
-                                <materialDesign:PackIcon Kind="Assignment" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <Button x:Name="cadastrarClientesButton" VerticalAlignment="Center" Margin="-8" HorizontalAlignment="Left" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Command="{Binding CadastrarClientesCommand}" ToolTip="Cadastrar clientes">
+                                <materialDesign:PackIcon Kind="PersonAdd" Width="25" Height="25" VerticalAlignment="Center"/>
                             </Button>
-                            <TextBlock VerticalAlignment="Center">Cadastrar Clientes</TextBlock>
+                            <Button Style="{StaticResource MaterialDesignRaisedDarkButton}" FontWeight="Regular" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF1368BD" Command="{Binding CadastrarClientesCommand}">Cadastrar Clientes</Button>
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem Height="60">
                         <StackPanel Orientation="Horizontal">
-                            <Button x:Name="cadastrarDealersButton" VerticalAlignment="Center" Margin="-8" HorizontalAlignment="Left" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Command="{Binding CadastrarDealersCommand}">
-                                <materialDesign:PackIcon Kind="Pencil" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <Button x:Name="cadastrarDealersButton" VerticalAlignment="Center" Margin="-8" HorizontalAlignment="Left" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Command="{Binding CadastrarDealersCommand}" ToolTip="Cadastrar dealers">
+                                <materialDesign:PackIcon Kind="HowToReg" Width="25" Height="25" VerticalAlignment="Center"/>
                             </Button>
-                            <TextBlock VerticalAlignment="Center">Cadastrar Dealers</TextBlock>
+                            <Button Style="{StaticResource MaterialDesignRaisedDarkButton}" FontWeight="Regular" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF1368BD" Command="{Binding CadastrarDealersCommand}">Cadastrar Dealers</Button>
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem Height="60">
                         <StackPanel Orientation="Horizontal">
-                            <Button x:Name="registrarCaixinhasButton" VerticalAlignment="Center" Margin="-8" HorizontalAlignment="Left" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Command="{Binding RegistrarCaixinhasCommand}">
-                                <materialDesign:PackIcon Kind="Ticket" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <Button x:Name="registrarCaixinhasButton" VerticalAlignment="Center" Margin="-8" HorizontalAlignment="Left" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Command="{Binding RegistrarCaixinhasCommand}" ToolTip="Caixinhas para dealers">
+                                <materialDesign:PackIcon Kind="CashPlus" Width="25" Height="25" VerticalAlignment="Center"/>
                             </Button>
-                            <TextBlock VerticalAlignment="Center">Registrar Caixinhas</TextBlock>
+                            <Button Style="{StaticResource MaterialDesignRaisedDarkButton}" FontWeight="Regular" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF1368BD" Command="{Binding RegistrarCaixinhasCommand}">Registrar Caixinhas</Button>
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem Height="60">
                         <StackPanel Orientation="Horizontal">
-                            <Button x:Name="comprarFichasButton" VerticalAlignment="Center" Margin="-8" HorizontalAlignment="Left" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Command="{Binding ComprarFichasCommand}">
-                                <materialDesign:PackIcon Kind="Message" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <Button x:Name="comprarFichasButton" VerticalAlignment="Center" Margin="-8" HorizontalAlignment="Left" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" Command="{Binding ComprarFichasCommand}" ToolTip="Liberar fichas para clientes">
+                                <materialDesign:PackIcon Kind="AccountCash" Width="25" Height="25" VerticalAlignment="Center"/>
                             </Button>
-                            <TextBlock VerticalAlignment="Center">Comprar Fichas</TextBlock>
+                            <Button Style="{StaticResource MaterialDesignRaisedDarkButton}" FontWeight="Regular" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF1368BD" Command="{Binding ComprarFichasCommand}">Comprar Fichas</Button>
                         </StackPanel>
                     </ListViewItem>
-                    <!--<ListViewItem Height="60">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="GithubBox" Width="25" Height="25" Margin="10" VerticalAlignment="Center"></materialDesign:PackIcon>
-                            <TextBlock VerticalAlignment="Center" Margin="20 10">Github</TextBlock>
-                        </StackPanel>
-                    </ListViewItem>-->
                 </ListView>
             </StackPanel>
         </Grid>

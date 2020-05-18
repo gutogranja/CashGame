@@ -16,7 +16,7 @@
         TextOptions.TextRenderingMode="Auto" 
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Retirada de rake" Height="650" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Retirada de rake" Height="400" Width="450" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -30,18 +30,73 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" FontSize="15" Text="Data"/>
             <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" FontSize="15" Text="Valor"/>
-            <DatePicker Grid.Row="0" Grid.Column="1" Margin="5" HorizontalAlignment="Left" IsEnabled="{Binding EditarData}" Text="{Binding View.DataRetirada, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding View.Valor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Valor" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <DatePicker Grid.Row="0" Grid.Column="1" Margin="5" HorizontalAlignment="Left" IsEnabled="{Binding EditarRake}" SelectedDate="{Binding View.DataRetirada,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <DatePicker Grid.Row="0" Grid.Column="2" Margin="5" 
+                        HorizontalAlignment="Right" 
+                        Visibility="{Binding VisibilidadeData}" 
+                        SelectedDate="{Binding DataPesquisar,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Row="0" Grid.Column="3" Margin="5" 
+                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" 
+                    Background="Red" 
+                    ToolTip="Pesquisar por data"
+                    Visibility="{Binding VisibilidadePesquisar}"
+                    Command="{Binding PesquisarCommand}">
+                <materialDesign:PackIcon Kind="Search" Height="30" Width="30"/>
+            </Button>
+
+
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding View.Valor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat=N2}" materialDesign:HintAssist.Hint="Valor" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
         </Grid>
         <Grid Grid.Row="1">
-            <DataGrid SelectedItem="{Binding View}" ItemsSource="{Binding ListaRake}" BorderThickness="3" BorderBrush="Black" GridLinesVisibility="All" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False">
+            <DataGrid SelectedItem="{Binding View}" ItemsSource="{Binding ListaRake}" 
+                      BorderThickness="1.6" 
+                      BorderBrush="White" 
+                      AutoGenerateColumns="False" 
+                      CanUserAddRows="False" 
+                      CanUserDeleteRows="False" 
+                      CanUserReorderColumns="False" 
+                      CanUserResizeRows="False" 
+                      CanUserSortColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      Background="#1C1C1C"
+                      Foreground="White"
+                      AlternatingRowBackground="#363636" AlternationCount="2"
+                      GridLinesVisibility="All"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" >
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Background" Value="#FF1B3861"/>
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Data Retirada" Binding="{Binding DataRetirada,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="400"/>
-                    <DataGridTextColumn Header="Valor" Binding="{Binding Valor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                    <DataGridTextColumn Header="Data Retirada" Binding="{Binding DataRetirada,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat=\{0:dd/MM/yyyy\}}" Width="225">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Valor" Binding="{Binding Valor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#,##0.00', ConverterCulture='pt-BR'}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -51,11 +106,11 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Button Content="INCLUIR" Margin="5" ToolTip="Incluir dados da retirada do rake" Command="{Binding IncluirCommand}"/>
-                <Button Content="ALTERAR" Margin="5" ToolTip="Alterar dados da retirada do rake" Command="{Binding AlterarCommand}"/>
-                <Button Content="INATIVAR" Margin="5" ToolTip="Inativar a retirada do rake" Command="{Binding InativarCommand}"/>
+                <Button Content="INCLUIR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Incluir dados da retirada do rake" Command="{Binding IncluirCommand}"/>
+                <Button Content="ALTERAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Alterar dados da retirada do rake" Command="{Binding AlterarCommand}"/>
+                <Button Content="INATIVAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Inativar a retirada do rake" Command="{Binding InativarCommand}"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="LIMPAR" Margin="5" ToolTip="Limpar dados da tela" Command="{Binding LimparTelaCommand}" HorizontalAlignment="Right"/>
+            <Button Grid.Column="1" Content="LIMPAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Limpar dados da tela" Command="{Binding LimparTelaCommand}" HorizontalAlignment="Right"/>
         </Grid>
     </Grid>
 </Controls:MetroWindow>

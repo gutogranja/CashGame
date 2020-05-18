@@ -22,6 +22,10 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         public DelegateCommand LimparTelaCommand { get; set; }
         public ProgressDialogController Progresso { get; set; }
 
+
+        //private readonly MainWindowViewModel main;
+
+
         private bool _modoEdicao = false;
         public bool ModoEdicao
         {
@@ -74,6 +78,10 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         public ClienteWindowViewModel(IDialogCoordinator dialog)
         {
             this.dialog = dialog;
+
+            //main = new MainWindowViewModel(this.dialog);
+                        
+
             clienteService = new ClienteService(new ClienteRepository());
             IncluirCommand = new DelegateCommand(Incluir, () => !ModoEdicao).ObservesProperty(() => ModoEdicao);
             AlterarCommand = new DelegateCommand(Alterar, () => ModoEdicao).ObservesProperty(() => ModoEdicao);
@@ -84,8 +92,9 @@ namespace CashGame.Apresentation.Wpf.ViewModels
 
         private async void Incluir()
         {
+            Request.Id = View.Id;
             Request.Nome = View.Nome;
-            Request.Telefone= View.Telefone;
+            Request.Telefone = View.Telefone;
             var clienteCriado = clienteService.Incluir(Request, "Carlosg");
             if (!clienteService.Validar)
             {
@@ -97,11 +106,11 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             {
                 Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Incluindo dados do cliente. Aguarde...");
                 Progresso.SetIndeterminate();
-                var t = Task.Factory.StartNew(() => { BuscarClientes(); });
+                var t = Task.Factory.StartNew(() => { Limpar(); });
                 await t;
                 await Progresso?.CloseAsync();
                 await this.dialog.ShowMessageAsync(this, "Atenção", "Cliente cadastrado com sucesso !!!");
-                Limpar();
+                //Limpar();
             }
         }
 
@@ -113,7 +122,7 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                 if (clienteExistente != null)
                 {
                     Request.Id = View.Id;
-                    Request.Telefone= View.Telefone;
+                    Request.Telefone = View.Telefone;
                     clienteExistente = clienteService.Alterar(Request, "Carlosg");
                     if (clienteService.Validar)
                     {
@@ -127,8 +136,8 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                     {
                         await this.dialog.ShowMessageAsync(this, "Atenção", string.Join("\r\n", clienteService.Notificacoes.Select(s => s.Mensagem)));
                         clienteService.LimparNotificacoes();
+                        BuscarClientes();
                     }
-                    BuscarClientes();
                 }
             }
         }
@@ -140,14 +149,18 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                 var clienteExistente = clienteService.ObterPorId(View.Id);
                 if (clienteExistente != null)
                 {
-                    Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Inativando cliente. Aguarde...");
-                    Progresso.SetIndeterminate();
-                    var t = Task.Factory.StartNew(() => { clienteService.Inativar(View.Id, "Carlosg"); });
-                    await t;
-                    await Progresso?.CloseAsync();
-                    await this.dialog.ShowMessageAsync(this, "Atenção", "Cliente inativado com sucesso !!!");
-                    Limpar();
-                    BuscarClientes();
+                    var inativarCliente = await MessageBoxQuestion("Atenção!", "Deseja mesmo inativar este cliente <S/N>?");
+                    if (inativarCliente)
+                    {
+                        Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Inativando cliente. Aguarde...");
+                        Progresso.SetIndeterminate();
+                        var t = Task.Factory.StartNew(() => { clienteService.Inativar(View.Id, "Carlosg"); });
+                        await t;
+                        await Progresso?.CloseAsync();
+                        await this.dialog.ShowMessageAsync(this, "Atenção", "Cliente inativado com sucesso !!!");
+                        Limpar();
+                        //BuscarClientes();
+                    }
                 }
                 else
                 {
@@ -164,7 +177,19 @@ namespace CashGame.Apresentation.Wpf.ViewModels
 
         private void Limpar()
         {
+            BuscarClientes();
             View = new ClienteView();
+        }
+
+        public async Task<bool> MessageBoxQuestion(string titulo, string msg)
+        {
+            var configuracoes = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Sim",
+                NegativeButtonText = "Não",
+            };
+            MessageDialogResult resultado = await this.dialog.ShowMessageAsync(this, titulo, msg, MessageDialogStyle.AffirmativeAndNegative, configuracoes);
+            return (resultado == MessageDialogResult.Affirmative);
         }
     }
 }

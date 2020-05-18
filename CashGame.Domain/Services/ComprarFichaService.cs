@@ -4,6 +4,7 @@ using CashGame.Domain.Entities.Requests;
 using CashGame.Domain.Entities.Views;
 using CashGame.Domain.Interfaces.Repositories;
 using CashGame.Domain.Interfaces.Services;
+using System;
 using System.Collections.Generic;
 
 namespace CashGame.Domain.Services
@@ -73,6 +74,11 @@ namespace CashGame.Domain.Services
             }
             else
                 AdicionarNotificacao("ComprarFichas", ComprarFichaMensagem.Inativar);
+        }
+
+        public IEnumerable<ComprarFichaView> ListarPorData(DateTime data)
+        {
+            return repositorio.ListarPorData(data);
         }
 
         private void ValidarCompra(ComprarFicha compra)

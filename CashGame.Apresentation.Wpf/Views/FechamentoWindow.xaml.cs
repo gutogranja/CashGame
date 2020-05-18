@@ -5,14 +5,14 @@ using MahApps.Metro.Controls.Dialogs;
 namespace CashGame.Apresentation.Wpf.Views
 {
     /// <summary>
-    /// Lógica interna para ComprarFichaWindow.xaml
+    /// Lógica interna para FechamentoWindow.xaml
     /// </summary>
-    public partial class ComprarFichaWindow : MetroWindow
+    public partial class FechamentoWindow : MetroWindow
     {
-        public ComprarFichaWindow()
+        public FechamentoWindow()
         {
             InitializeComponent();
-            this.DataContext = new ComprarFichaWindowViewModel(DialogCoordinator.Instance);
+            this.DataContext = new FechamentoWindowViewModel(DialogCoordinator.Instance);
         }
     }
 }

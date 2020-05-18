@@ -2,13 +2,33 @@
 using MahApps.Metro.Controls.Dialogs;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace CashGame.Apresentation.Wpf.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+
+        //private IDialogCoordinator dlgCoord;
+        //public IDialogCoordinator DlgCoord
+        //{
+        //    get
+        //    {
+        //        if (dlgCoord == null)
+        //            dlgCoord = DialogCoordinator.Instance;
+        //        return dlgCoord;
+        //    }
+        //    set
+        //    {
+        //        SetProperty(ref dlgCoord, value);
+        //    }
+        //}
+
+
+
         IDialogCoordinator dialog;
         public DelegateCommand AbrirMenuCommand { get; set; }
         public DelegateCommand FecharMenuCommand { get; set; }
@@ -21,18 +41,8 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         public DelegateCommand PagtoClienteCommand { get; set; }
         public DelegateCommand SairCommand { get; set; }
 
-        private bool _visivel = true;
-        public bool Visivel
-        {
-            get { return _visivel; }
-            set
-            {
-                SetProperty(ref _visivel, value);
-            }
-        }
-
-        private string _visibilidadeAbrir = "Visible";
-        public string VisibilidadeAbrir
+        private Visibility _visibilidadeAbrir = Visibility.Visible;
+        public Visibility VisibilidadeAbrir
         {
             get { return _visibilidadeAbrir; }
             set
@@ -41,8 +51,8 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             }
         }
 
-        private string _visibilidadeFechar = "Collapsed";
-        public string VisibilidadeFechar
+        private Visibility _visibilidadeFechar = Visibility.Collapsed;
+        public Visibility VisibilidadeFechar
         {
             get { return _visibilidadeFechar; }
             set
@@ -54,23 +64,28 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         public MainWindowViewModel(IDialogCoordinator dialog)
         {
             this.dialog = dialog;
-            AbrirMenuCommand = new DelegateCommand(AbrirFecharMenu, () => Visivel).ObservesProperty(() => Visivel);
-            FecharMenuCommand = new DelegateCommand(AbrirFecharMenu, () => !Visivel).ObservesProperty(() => Visivel);
+            AbrirMenuCommand = new DelegateCommand(AbrirMenu);
+            FecharMenuCommand = new DelegateCommand(FecharMenu);
             CadastrarClientesCommand = new DelegateCommand(CadastrarClientes);
             CadastrarDealersCommand = new DelegateCommand(CadastrarDealers);
             RegistrarCaixinhasCommand = new DelegateCommand(RegistrarCaixinha);
             ComprarFichasCommand = new DelegateCommand(ComprarFichas);
-            //FechamentoCommand = new DelegateCommand(Fechamento);
+            FechamentoCommand = new DelegateCommand(Fechamento);
             RakeCommand = new DelegateCommand(RetirarRake);
             PagtoClienteCommand = new DelegateCommand(PagtoCliente);
             SairCommand = new DelegateCommand(Sair);
         }
 
-        private void AbrirFecharMenu()
+        private void AbrirMenu()
         {
-            VisibilidadeAbrir = Visivel ? "Collapsed" : "Visible";
-            VisibilidadeFechar = Visivel ? "Visible" : "Collapsed";
-            Visivel = !Visivel;
+            VisibilidadeAbrir = Visibility.Collapsed;
+            VisibilidadeFechar = Visibility.Visible;
+        }
+
+        private void FecharMenu()
+        {
+            VisibilidadeFechar = Visibility.Collapsed;
+            VisibilidadeAbrir = Visibility.Visible;
         }
 
         private void CadastrarClientes()
@@ -97,11 +112,11 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             novaJanela.ShowDialog();
         }
 
-        //private void Fechamento()
-        //{
-        //    FechamentoWindow novaJanela = new FechamentoWindow();
-        //    novaJanela.ShowDialog();
-        //}
+        private void Fechamento()
+        {
+            FechamentoWindow novaJanela = new FechamentoWindow();
+            novaJanela.ShowDialog();
+        }
 
         private void RetirarRake()
         {
@@ -119,5 +134,17 @@ namespace CashGame.Apresentation.Wpf.ViewModels
         {
             Application.Current.Shutdown();
         }
+
+        //public async Task<bool> MessageBoxQuestion(string titulo, string msg)
+        //{
+        //    var configuracoes = new MetroDialogSettings()
+        //    {
+        //        AffirmativeButtonText = "Sim",
+        //        NegativeButtonText = "Não",
+        //    };
+        //    MessageDialogResult resultado = await DlgCoord.ShowMessageAsync(this, titulo, msg, MessageDialogStyle.AffirmativeAndNegative, configuracoes);
+        //    return (resultado == MessageDialogResult.Affirmative);
+        //}
+
     }
 }

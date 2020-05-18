@@ -84,6 +84,7 @@ namespace CashGame.Apresentation.Wpf.ViewModels
 
         private async void Incluir()
         {
+            Request.Id = View.Id;
             Request.Nome = View.Nome;
             Request.Telefone = View.Telefone;
             var dealerCriado = dealerService.Incluir(Request, "Carlosg");
@@ -97,11 +98,11 @@ namespace CashGame.Apresentation.Wpf.ViewModels
             {
                 Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Incluindo dados do dealer. Aguarde...");
                 Progresso.SetIndeterminate();
-                var t = Task.Factory.StartNew(() => { BuscarDealers(); });
+                var t = Task.Factory.StartNew(() => { Limpar(); });
                 await t;
                 await Progresso?.CloseAsync();
                 await this.dialog.ShowMessageAsync(this, "Atenção", "Dealer cadastrado com sucesso !!!");
-                Limpar();
+                //Limpar();
             }
         }
 
@@ -127,8 +128,8 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                     {
                         await this.dialog.ShowMessageAsync(this, "Atenção", string.Join("\r\n", dealerService.Notificacoes.Select(s => s.Mensagem)));
                         dealerService.LimparNotificacoes();
+                        BuscarDealers();
                     }
-                    BuscarDealers();
                 }
             }
         }
@@ -140,14 +141,17 @@ namespace CashGame.Apresentation.Wpf.ViewModels
                 var dealerExistente = dealerService.ObterPorId(View.Id);
                 if (dealerExistente != null)
                 {
-                    Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Inativando dealer. Aguarde...");
-                    Progresso.SetIndeterminate();
-                    var t = Task.Factory.StartNew(() => { dealerService.Inativar(View.Id, "Carlosg"); });
-                    await t;
-                    await Progresso?.CloseAsync();
-                    await this.dialog.ShowMessageAsync(this, "Atenção", "Dealer inativado com sucesso !!!");
-                    Limpar();
-                    BuscarDealers();
+                    var inativarDealer = await MessageBoxQuestion("Atenção!", "Deseja mesmo inativar este dealer <S/N>?");
+                    if (inativarDealer)
+                    {
+                        Progresso = await dialog.ShowProgressAsync(this, "Progresso", "Inativando dealer. Aguarde...");
+                        Progresso.SetIndeterminate();
+                        var t = Task.Factory.StartNew(() => { dealerService.Inativar(View.Id, "Carlosg"); });
+                        await t;
+                        await Progresso?.CloseAsync();
+                        await this.dialog.ShowMessageAsync(this, "Atenção", "Dealer inativado com sucesso !!!");
+                        Limpar();
+                    }
                 }
                 else
                 {
@@ -164,7 +168,19 @@ namespace CashGame.Apresentation.Wpf.ViewModels
 
         private void Limpar()
         {
+            BuscarDealers();
             View = new DealerView();
+        }
+
+        public async Task<bool> MessageBoxQuestion(string titulo, string msg)
+        {
+            var configuracoes = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Sim",
+                NegativeButtonText = "Não",
+            };
+            MessageDialogResult resultado = await this.dialog.ShowMessageAsync(this, titulo, msg, MessageDialogStyle.AffirmativeAndNegative, configuracoes);
+            return (resultado == MessageDialogResult.Affirmative);
         }
     }
 }

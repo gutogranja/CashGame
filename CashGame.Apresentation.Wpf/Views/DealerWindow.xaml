@@ -16,7 +16,7 @@
         TextOptions.TextRenderingMode="Auto" 
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Cadastro de dealers" Height="650" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Cadastro de dealers" Height="450" Width="600" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -38,10 +38,43 @@
             <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding View.Telefone, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Telefone" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
         </Grid>
         <Grid Grid.Row="1">
-            <DataGrid SelectedItem="{Binding View}" ItemsSource="{Binding ListaDealer}" BorderThickness="3" BorderBrush="Black" GridLinesVisibility="All" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False">
+            <DataGrid SelectedItem="{Binding View}" ItemsSource="{Binding ListaDealer}" 
+                      BorderThickness="1.6" 
+                      BorderBrush="White" 
+                      AutoGenerateColumns="False" 
+                      CanUserAddRows="False" 
+                      CanUserDeleteRows="False" 
+                      CanUserReorderColumns="False" 
+                      CanUserResizeRows="False" 
+                      CanUserSortColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      Background="#1C1C1C"
+                      Foreground="White"
+                      AlternatingRowBackground="#363636" AlternationCount="2"
+                      GridLinesVisibility="All"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" >
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Background" Value="#FF1B3861"/>
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Nome Dealer" Binding="{Binding Nome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="400"/>
-                    <DataGridTextColumn Header="Telefone" Binding="{Binding Telefone,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                    <DataGridTextColumn Header="Nome Dealer" Binding="{Binding Nome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="375"/>
+                    <DataGridTextColumn Header="Telefone" Binding="{Binding Telefone,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -51,11 +84,11 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Button Content="INCLUIR" Margin="5" ToolTip="Incluir dados do dealer" Command="{Binding IncluirCommand}"/>
-                <Button Content="ALTERAR" Margin="5" ToolTip="Alterar dados do dealer" Command="{Binding AlterarCommand}"/>
-                <Button Content="INATIVAR" Margin="5" ToolTip="Inativar o dealer" Command="{Binding InativarCommand}"/>
+                <Button Content="INCLUIR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Incluir dados do dealer" Command="{Binding IncluirCommand}"/>
+                <Button Content="ALTERAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Alterar dados do dealer" Command="{Binding AlterarCommand}"/>
+                <Button Content="INATIVAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Inativar o dealer" Command="{Binding InativarCommand}"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="LIMPAR" Margin="5" ToolTip="Limpar dados da tela" Command="{Binding LimparTelaCommand}" HorizontalAlignment="Right"/>
+            <Button Grid.Column="1" Content="LIMPAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Limpar dados da tela" Command="{Binding LimparTelaCommand}" HorizontalAlignment="Right"/>
         </Grid>
     </Grid>
 </Controls:MetroWindow>

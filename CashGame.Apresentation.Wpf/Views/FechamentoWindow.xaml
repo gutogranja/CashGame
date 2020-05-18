@@ -1,0 +1,59 @@
+﻿<Controls:MetroWindow x:Class="CashGame.Apresentation.Wpf.Views.FechamentoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" 
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        Dialog:DialogParticipation.Register="{Binding}"
+        xmlns:local="clr-namespace:CashGame.Apresentation.Wpf"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto" 
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Fechamento diário" Height="300" Width="450" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="180"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Rectangle Height="140" Margin="20" Fill="White" RadiusY="10" RadiusX="10">
+                <Rectangle.Effect>
+                    <DropShadowEffect BlurRadius="20" Color="#FFDEDEDE" RenderingBias="Quality" ShadowDepth="15"/>
+                </Rectangle.Effect>
+            </Rectangle>
+            <Grid Margin="20" Height="140">
+                <Grid Width="250" Height="30" Background="Aqua" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20 0">
+                    <Grid.Effect>
+                        <DropShadowEffect BlurRadius="20" Color="#FFECECEC" RenderingBias="Quality" ShadowDepth="5"/>
+                    </Grid.Effect>
+                    <TextBlock Text="Período de datas" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                </Grid>
+                <Grid Height="80">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="18" FontWeight="Bold" Text="Data Inicial"/>
+                    <DatePicker Grid.Row="1" Grid.Column="0" Margin="5" HorizontalAlignment="Center" SelectedDate="{Binding DataInicial,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="18" FontWeight="Bold" Text="Data Final"/>
+                    <DatePicker Grid.Row="1" Grid.Column="1" Margin="5" HorizontalAlignment="Center" SelectedDate="{Binding DataFinal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Button Content="FECHAMENTO" BorderBrush="Yellow" BorderThickness="2" HorizontalAlignment="Center" Margin="5" ToolTip="Gerar relatório de fechamento" Command="{Binding ExecutarCommand}"/>
+            <Button Content="LIMPAR" BorderBrush="Yellow" BorderThickness="2" HorizontalAlignment="Right" Margin="5" ToolTip="Limpar dados da tela" Command="{Binding LimparTelaCommand}"/>
+        </Grid>
+    </Grid>
+</Controls:MetroWindow>

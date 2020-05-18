@@ -16,7 +16,7 @@
         TextOptions.TextRenderingMode="Auto" 
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Pagamento aos jogadores" Height="650" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Pagamento aos jogadores" Height="450" Width="650" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -31,21 +31,74 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="260"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" FontSize="15" Text="Cliente"/>
             <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" FontSize="15" Text="Data"/>
             <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" FontSize="15" Text="Valor"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" HorizontalAlignment="Left" ItemsSource="{Binding ListaCliente}" DisplayMemberPath="Nome" SelectedValuePath="Id" IsEnabled="{Binding EditarCliente}" Text="{Binding View.Nome, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-            <DatePicker Grid.Row="1" Grid.Column="1" Margin="5" HorizontalAlignment="Left" IsEnabled="{Binding EditarData}" Text="{Binding View.Data, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding View.Valor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Valor" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" MaxDropDownHeight="150" HorizontalAlignment="Left" ItemsSource="{Binding ListaCliente}" DisplayMemberPath="Nome" SelectedValuePath="Id" SelectedItem="{Binding ClienteView,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding View.Nome}" IsEnabled="{Binding EditarPagto}"/>
+            <DatePicker Grid.Row="0" Grid.Column="2" Margin="5" 
+                        HorizontalAlignment="Right" 
+                        Visibility="{Binding VisibilidadeData}" 
+                        SelectedDate="{Binding DataPesquisar,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Row="0" Grid.Column="3" Margin="5" 
+                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" 
+                    Background="Red" 
+                    ToolTip="Pesquisar por data"
+                    Visibility="{Binding VisibilidadePesquisar}"
+                    Command="{Binding PesquisarCommand}">
+                <materialDesign:PackIcon Kind="Search" Height="30" Width="30"/>
+            </Button>
+            <DatePicker Grid.Row="1" Grid.Column="1" Margin="5" HorizontalAlignment="Left" IsEnabled="{Binding EditarPagto}" SelectedDate="{Binding View.Data,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding View.Valor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat=N2}" materialDesign:HintAssist.Hint="Valor" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
         </Grid>
         <Grid Grid.Row="1">
-            <DataGrid SelectedItem="{Binding View}" ItemsSource="{Binding ListaPagtoJogador}" BorderThickness="3" BorderBrush="Black" GridLinesVisibility="All" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False">
+            <DataGrid SelectedItem="{Binding View}" ItemsSource="{Binding ListaPagamento}" 
+                      BorderThickness="1.6" 
+                      BorderBrush="White" 
+                      AutoGenerateColumns="False" 
+                      CanUserAddRows="False" 
+                      CanUserDeleteRows="False" 
+                      CanUserReorderColumns="False" 
+                      CanUserResizeRows="False" 
+                      CanUserSortColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      Background="#1C1C1C"
+                      Foreground="White"
+                      AlternatingRowBackground="#363636" AlternationCount="2"
+                      GridLinesVisibility="All"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" >
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Background" Value="#FF1B3861"/>
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Nome Cliente" Binding="{Binding Nome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="400"/>
-                    <DataGridTextColumn Header="Data" Binding="{Binding Data,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="200"/>
-                    <DataGridTextColumn Header="Valor" Binding="{Binding Valor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                    <DataGridTextColumn Header="Nome Cliente" Binding="{Binding Nome,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="330"/>
+                    <DataGridTextColumn Header="Data" Binding="{Binding Data,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat=\{0:dd/MM/yyyy\}}" Width="150">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Valor" Binding="{Binding Valor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#,##0.00', ConverterCulture='pt-BR'}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -55,11 +108,11 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Button Content="INCLUIR" Margin="5" ToolTip="Efetuar pagamento ao jogador" Command="{Binding IncluirCommand}"/>
-                <Button Content="ALTERAR" Margin="5" ToolTip="Alterar pagamento ao jogador" Command="{Binding AlterarCommand}"/>
-                <Button Content="INATIVAR" Margin="5" ToolTip="Inativar pagamento ao jogador" Command="{Binding InativarCommand}"/>
+                <Button Content="INCLUIR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Efetuar pagamento ao jogador" Command="{Binding IncluirCommand}"/>
+                <Button Content="ALTERAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Alterar pagamento ao jogador" Command="{Binding AlterarCommand}"/>
+                <Button Content="INATIVAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Inativar pagamento ao jogador" Command="{Binding InativarCommand}"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="LIMPAR" Margin="5" ToolTip="Limpar dados da tela" Command="{Binding LimparTelaCommand}" HorizontalAlignment="Right"/>
+            <Button Grid.Column="1" Content="LIMPAR" BorderBrush="Yellow" BorderThickness="2" Margin="5" ToolTip="Limpar dados da tela" Command="{Binding LimparTelaCommand}" HorizontalAlignment="Right"/>
         </Grid>
     </Grid>
 </Controls:MetroWindow>

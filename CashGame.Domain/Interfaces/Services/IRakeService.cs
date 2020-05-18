@@ -1,6 +1,7 @@
 ﻿using CashGame.Domain.Entities;
 using CashGame.Domain.Entities.Requests;
 using CashGame.Domain.Entities.Views;
+using System;
 using System.Collections.Generic;
 
 namespace CashGame.Domain.Interfaces.Services
